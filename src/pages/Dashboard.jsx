@@ -9,6 +9,7 @@ import Settings from "../components/Settings";
 import TransactionModal from "../components/TransactionModal";
 import { PlusCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import api from "../config/axiosConfig"; // Axios instance
 
 // --- CATEGORY LISTS ---
 const expenseCategories = [
@@ -110,7 +111,7 @@ export default function Dashboard() {
       const formData = new FormData();
       Object.entries(newTransaction).forEach(([key, value]) => formData.append(key, value));
 
-      await axios.post("http://localhost:5000/api/transactions", formData, {
+      await api.post(`/transactions`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

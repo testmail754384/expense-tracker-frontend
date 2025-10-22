@@ -8,8 +8,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { ArrowUpRight, ArrowDownRight, Wallet, ShoppingBag, PiggyBank, WalletCards } from "lucide-react";
-import axios from "axios";
 import { toast } from "react-toastify";
+import api from "../config/axiosConfig"; // Axios instance
+
 
 export default function Overview({ refreshKey }) {
   const [transactions, setTransactions] = useState([]);
@@ -28,7 +29,7 @@ export default function Overview({ refreshKey }) {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/transactions", {
+        const res = await api.get(`/transactions`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -188,7 +189,7 @@ export default function Overview({ refreshKey }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentTransactions.map((tx) => (
+                  {recentTransactions.map((tx,index) => (
                     <tr
                       key={tx.id}
                       className="border-b border-green-50 dark:border-gray-700 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors"

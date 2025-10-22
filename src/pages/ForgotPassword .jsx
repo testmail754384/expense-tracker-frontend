@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { Mail, Send } from "lucide-react";
+import api from "../config/axiosConfig"; // Axios instance
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export default function ForgotPassword() {
 
     try {
       setLoading(true);
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/forgot-password`, { email });
+      const res = await api.post(`/auth/forgot-password`, { email });
       toast.success(res.data.message);
       setTimeout(() => {
         window.location.href = `/reset-password?email=${encodeURIComponent(email)}`;

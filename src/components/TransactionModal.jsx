@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, X } from "lucide-react";
 import { toast } from "react-toastify";
-import axios from "axios";
+import api from "../config/axiosConfig"; // Axios instance
 
 export default function TransactionModal({
   open,
@@ -106,15 +106,15 @@ description: "",
       };
 
       if (editData?._id) {
-        await axios.put(
-          `http://localhost:5000/api/transactions/${editData._id}`,
+        await api.put(
+          `/transactions/${editData._id}`,
           payload,
           headers
         );
         toast.success("Transaction updated successfully");
       } else {
-        await axios.post(
-          "http://localhost:5000/api/transactions",
+        await api.post(
+          `/transactions`,
           payload,
           headers
         );

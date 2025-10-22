@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { Lock, KeyRound, ShieldCheck } from "lucide-react";
+import api from "../config/axiosConfig"; // Axios instance
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -47,7 +47,7 @@ export default function ResetPassword() {
     if (cooldown) return;
     try {
       setCooldown(true);
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/resend-otp`, { email });
+      const res = await api.post(`/auth/resend-otp`, { email });
       toast.success(res.data.message);
     } catch (err) {
       toast.error(err.response?.data?.message || "Error resending OTP.");
@@ -68,7 +68,7 @@ export default function ResetPassword() {
 
     try {
       setLoading(true);
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/reset-pass`, {
+      const res = await api.post(`/auth/reset-pass`, {
         email,
         otp,
         newPassword,

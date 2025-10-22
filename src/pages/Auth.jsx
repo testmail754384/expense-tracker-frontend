@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
 import { toast } from "react-toastify";
-
-
-const API_BASE = `${import.meta.env.VITE_BACKEND_URL}/api/auth`;
+import api from "../config/axiosConfig"; // Axios instance
 
 export default function Auth() {
   const [tab, setTab] = useState("login");
@@ -81,7 +78,7 @@ export default function Auth() {
 
     setIsOtpLoading(true);
     try {
-      const response = await axios.post(`${API_BASE}/send-otp`, { email: formData.email });
+      const response = await api.post(`/auth/send-otp`, { email: formData.email });
       toast.success(response.data.message || "An OTP has been sent to your email!");
       setOtpSent(true);
       setCountdown(60);
@@ -107,13 +104,13 @@ export default function Auth() {
     try {
       let response;
       if (tab === "login") {
-        response = await axios.post(`${API_BASE}/login`, {
+        response = await api.post(`/auth/login`, {
           email: formData.email,
           password: formData.password,
         });
         toast.success("Login successful! Redirecting...");
       } else {
-        response = await axios.post(`${API_BASE}/signup`, {
+        response = await api.post(`/auth/signup`, {
           name: formData.name,
           email: formData.email,
           password: formData.password,
@@ -137,6 +134,7 @@ export default function Auth() {
 
   const handleGoogleSignIn = () => {
     toast.info("Redirecting you to Google...");
+    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/auth/google`
   };
 
   const formTransition = {
@@ -217,7 +215,7 @@ export default function Auth() {
             <button
               key={type}
               onClick={() => setTab(type)}
-              className={`relative text-base font-semibold transition-colors duration-300 px-3 py-1 ${
+              className={`relative text-base font-semibold transition-colors duration-300 cursor-pointer px-3 py-1 ${
                 tab === type
                   ? "text-green-700 dark:text-green-400"
                   : "text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-300"
@@ -268,6 +266,7 @@ export default function Auth() {
               animate="visible"
               type="email"
               name="email"
+              autoComplete="none"
               placeholder="Email Address"
               value={formData.email}
               onChange={handleChange}
@@ -284,6 +283,7 @@ export default function Auth() {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
+              autoComplete="current-password"
               className="w-full px-4 py-2 text-base rounded-lg outline-none border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500"
               required
             />
@@ -323,7 +323,7 @@ export default function Auth() {
               whileTap={{ scale: 0.97 }}
               type="submit"
               disabled={isFormLoading}
-              className="w-full py-2 text-base font-semibold rounded-lg shadow-md transition-all bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed dark:bg-green-500 dark:hover:bg-green-600 dark:disabled:bg-gray-600 dark:text-gray-900"
+              className="w-full py-2 text-base font-semibold rounded-lg shadow-md transition-all cursor-pointer bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed dark:bg-green-500 dark:hover:bg-green-600 dark:disabled:bg-gray-600 dark:text-gray-900"
             >
               {isFormLoading ? "Processing..." : tab === "login" ? "Login" : "Sign Up"}
             </motion.button>
@@ -346,9 +346,8 @@ export default function Auth() {
           className="mt-5"
         >
           <a
-            href="http://localhost:5000/api/auth/google"
             onClick={handleGoogleSignIn}
-            className="flex items-center justify-center gap-3 w-full py-2 rounded-lg shadow-sm transition border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
+            className="flex items-center justify-center gap-3 w-full py-2 rounded-lg shadow-sm transition border cursor-pointer border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
             <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5" />
             <span className="font-medium text-gray-700 text-sm dark:text-gray-200">Continue with Google</span>

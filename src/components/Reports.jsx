@@ -8,6 +8,8 @@ import {
 } from "recharts";
 import { ArrowLeft, ArrowRight } from "lucide-react"; // Removed unused icons for clarity
 import { motion, AnimatePresence } from "framer-motion";
+import api from "../config/axiosConfig"; // Axios instance
+
 
 
 // Helper function to format currency
@@ -55,7 +57,7 @@ export default function Reports({ refreshKey }) {
     const fetchTransactions = async () => {
         setLoading(true);
         try {
-            const res = await axios.get("http://localhost:5000/api/transactions");
+            const res = await api.get(`/transactions`);
             // Ensure date is only YYYY-MM-DD
             const formattedData = res.data.map(tx => ({
                 ...tx,
