@@ -104,7 +104,7 @@ export default function Auth() {
     try {
       let response;
       if (tab === "login") {
-        response = await api.post(`/auth/login`, {
+        response = await api.post(`${API_BASE}/auth/login`, {
           email: formData.email,
           password: formData.password,
         });
