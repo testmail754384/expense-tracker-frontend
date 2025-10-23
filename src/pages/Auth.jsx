@@ -104,7 +104,7 @@ export default function Auth() {
     try {
       let response;
       if (tab === "login") {
-        response = await api.post(`https://expense-tracker-backend-49x6.onrender.com/auth/login`, {
+        response = await api.post(`https://expense-tracker-backend-49x6.onrender.com/api/auth/login`, {
           email: formData.email,
           password: formData.password,
         });
