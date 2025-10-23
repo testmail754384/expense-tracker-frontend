@@ -38,7 +38,7 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, activeTheme
       {/* Sidebar Container */}
       <div
         className={`fixed md:relative top-0 left-0 h-screen
-          bg-white/90 dark:bg-green-900/95 backdrop-blur-md
+          bg-white/50 dark:bg-green-900/95 backdrop-blur-md
           border-r border-green-100 dark:border-gray-800
           shadow-xl flex flex-col z-40 transition-all duration-300
           ${collapsed ? "w-15" : "w-45"}
