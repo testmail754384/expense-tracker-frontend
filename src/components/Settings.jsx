@@ -134,9 +134,9 @@ export default function Settings({ onUpdate }) {
   };
 
   const handleExport = async () => {
+    setIsExporting(true);
     try {
       const res = await api.get("/user/export", { responseType: "blob" });
-      setIsExporting(true);
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -284,7 +284,6 @@ export default function Settings({ onUpdate }) {
         <div className="space-y-4">
           <button
             onClick={handleExport}
-            disabled={setIsExporting}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 dark:bg-gray-500 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             {isExporting ? "Exporting your data..." : "Export All Data as CSV"}
