@@ -179,13 +179,13 @@ export default function Auth() {
           className="text-center text-sm md:text-xl font-bold mb-2 text-gray-800 dark:text-gray-100"
         >
           Manage Your Expenses <br></br> With
-          <p className="text-green-500 text-2xl dark:text-green-400">ExpensePro</p>
+          <p className="text-green-400 text-2xl dark:text-green-400">ExpensePro</p>
         </motion.h1>
 
         {/* Currency Icon */}
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: [0, 1.1, 1] }}
+          animate={{ scale: [5, 1.4, 1.8] }}
           transition={{ duration: 0.8, ease: "backOut" }}
           className="flex justify-center mb-2"
         >
