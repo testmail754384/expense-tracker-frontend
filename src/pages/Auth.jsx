@@ -179,7 +179,7 @@ export default function Auth() {
           className="text-center text-sm md:text-xl font-bold mb-2 text-gray-800 dark:text-gray-100"
         >
           Manage Your Expenses <br></br> With
-          <p className="text-green-500 text-2xl">ExpensePro</p>
+          <p className="text-green-500 text-2xl dark:text-green-400">ExpensePro</p>
         </motion.h1>
 
         {/* Currency Icon */}
