@@ -80,7 +80,7 @@ export default function Overview({ refreshKey }) {
       date: new Date(t.date).toLocaleDateString(),
     }));
 
-  if (loading) return <p className="text-center mt-6 text-gray-700 dark:text-gray-300">Loading...</p>;
+  if (loading) return <p className="text-center mt-20 text-gray-700 dark:text-gray-300">Loading...</p>;
 
   return (
     <div className="h-full overflow-y-auto scroll-smooth px-2 mt-11 md:px-4 lg:px-6 space-y-8 pb-8 bg-transparent transition-colors duration-300">

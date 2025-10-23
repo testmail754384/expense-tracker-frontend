@@ -270,7 +270,7 @@ export default function Reports({ refreshKey }) {
                 if (!isNaN(year)) years.add(year);
             }
         });
-        // const years = new Set(transactions.map(tx => new Date(tx.date + 'T00:00:00Z').getUTCFullYear())); // Use UTC
+       
         const sortedYears = Array.from(years).sort((a, b) => b - a); // Descending
         return sortedYears.length > 0 ? sortedYears : [currentYear];
     }, [transactions, currentYear]);
@@ -312,7 +312,7 @@ export default function Reports({ refreshKey }) {
     };
 
 
-    if (loading) return <p className="text-center mt-6 text-gray-600">Loading reports...</p>;
+    if (loading) return <p className="text-center mt-20 text-gray-600">Loading reports...</p>;
 
 
 
@@ -930,7 +930,7 @@ export default function Reports({ refreshKey }) {
 
                                             paddingAngle={2}
 
-                                            animationDuration={500} // ADDED
+                                            animationDuration={1000} // ADDED
 
                                         >
 

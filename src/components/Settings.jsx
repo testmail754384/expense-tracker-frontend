@@ -51,7 +51,7 @@ export default function Settings({ onUpdate }) {
     fetchUserData();
   }, [navigate]);
 
-  
+
   // --- Handlers ---
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -159,7 +159,7 @@ export default function Settings({ onUpdate }) {
     }
   };
 
-  if (loading) return <p className="text-center mt-6 text-gray-600 dark:text-gray-400">Loading settings...</p>;
+  if (loading) return <p className="text-center  mt-20 text-gray-600 dark:text-gray-400">Loading settings...</p>;
 
   const avatarName = userData.name || userData.email?.split("@")[0] || "User";
   const profileImageSrc =
@@ -265,7 +265,7 @@ export default function Settings({ onUpdate }) {
       </SettingsCard>
 
       {/* Appearance Card */}
-      <Appearance  />
+      <Appearance />
 
 
 
@@ -355,11 +355,10 @@ const ThemeButton = ({ icon: Icon, label, theme, activeTheme, setTheme }) => (
   <button
     onClick={() => setTheme(theme)}
     aria-label={`Switch to ${label} theme`}
-    className={`relative flex items-center justify-center gap-2 py-2 px-3 text-sm rounded-md transition-colors w-full ${
-      activeTheme === theme
-        ? "text-green-800 dark:text-green-300"
-        : "text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-600/50"
-    }`}
+    className={`relative flex items-center justify-center gap-2 py-2 px-3 text-sm rounded-md transition-colors w-full ${activeTheme === theme
+      ? "text-green-800 dark:text-green-300"
+      : "text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-600/50"
+      }`}
   >
     {activeTheme === theme && (
       <motion.div
