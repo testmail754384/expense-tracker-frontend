@@ -77,7 +77,7 @@ export default function Auth() {
 
     setIsOtpLoading(true);
     try {
-      const response = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/send-otp`, { email: formData.email });
+      const response = await api.post(`/auth/send-otp`, { email: formData.email });
       toast.success(response.data.message || "An OTP has been sent to your email!");
       setOtpSent(true);
       setCountdown(60);
@@ -109,7 +109,7 @@ export default function Auth() {
         });
         toast.success("Login successful! Redirecting...");
       } else {
-        response = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
+        response = await api.post(`/auth/signup`, {
           name: formData.name,
           email: formData.email,
           password: formData.password,
