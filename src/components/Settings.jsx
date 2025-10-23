@@ -20,6 +20,7 @@ export default function Settings({ onUpdate }) {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({ name: "", email: "", profilePic: "" });
   const [loading, setLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Form states
   const [nameInput, setNameInput] = useState("");
@@ -135,7 +136,7 @@ export default function Settings({ onUpdate }) {
   const handleExport = async () => {
     try {
       const res = await api.get("/user/export", { responseType: "blob" });
-      setLoading(true);
+      setIsExporting(true);
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -148,7 +149,7 @@ export default function Settings({ onUpdate }) {
       console.error(err);
       toast.error(err.response?.data?.message || "Failed to export CSV.");
     }finally{
-      setLoading(false)
+      setIsExporting(false);
     }
   };
 
@@ -283,10 +284,10 @@ export default function Settings({ onUpdate }) {
         <div className="space-y-4">
           <button
             onClick={handleExport}
-            disabled={setLoading}
+            disabled={setIsExporting}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-600 dark:bg-gray-500 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Exporting your data..." : "Export All Data as CSV"}
+            {isExporting ? "Exporting your data..." : "Export All Data as CSV"}
           </button>
           <div className="p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-r-lg">
             <p className="text-sm font-semibold text-red-800 dark:text-red-300">Danger Zone</p>
