@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
-const API_BASE = `${import.meta.env.VITE_BACKEND_URL}/api`
 
 export default function Auth() {
   const [tab, setTab] = useState("login");
@@ -78,7 +77,7 @@ export default function Auth() {
 
     setIsOtpLoading(true);
     try {
-      const response = await api.post(`${API_BASE}/auth/send-otp`, { email: formData.email });
+      const response = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/send-otp`, { email: formData.email });
       toast.success(response.data.message || "An OTP has been sent to your email!");
       setOtpSent(true);
       setCountdown(60);
@@ -104,13 +103,13 @@ export default function Auth() {
     try {
       let response;
       if (tab === "login") {
-        response = await api.post(`${API_BASE}/auth/login`, {
+        response = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
           email: formData.email,
           password: formData.password,
         });
         toast.success("Login successful! Redirecting...");
       } else {
-        response = await api.post(`${API_BASE}/auth/signup`, {
+        response = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
           name: formData.name,
           email: formData.email,
           password: formData.password,
