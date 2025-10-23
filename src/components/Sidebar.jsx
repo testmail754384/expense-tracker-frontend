@@ -38,7 +38,7 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, activeTheme
       {/* Sidebar Container */}
       <div
         className={`fixed md:relative top-0 left-0 h-screen
-          bg-white/50 dark:bg-green-900/95 backdrop-blur-md
+          bg-white/50 dark:bg-green-900/60 backdrop-blur-md
           border-r border-green-100 dark:border-gray-800
           shadow-xl flex flex-col z-40 transition-all duration-300
           ${collapsed ? "w-15" : "w-45"}
@@ -75,10 +75,9 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, activeTheme
                   setMobileOpen(false);
                 }}
                 className={`flex items-center gap-3 w-full px-5 py-3 rounded-lg transition-all text-left
-                  ${
-                    activeTab === item.id
-                      ? "bg-green-200 dark:bg-green-700/30 text-green-800 dark:text-green-200 font-semibold"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-gray-800/50"
+                  ${activeTab === item.id
+                    ? "bg-green-200 dark:bg-green-700/30 text-green-800 dark:text-green-200 font-semibold"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-gray-800/50"
                   }`}
               >
                 {item.icon}
@@ -88,22 +87,22 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout, activeTheme
           </div>
 
           {/* Logout */}
-<div className="p-1 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
-  <button
-    onClick={() => {
-      setMobileOpen(false);
-      onLogout && onLogout();
-    }}
-    className="flex items-center gap-3 w-full text-left 
+          <div className="p-1 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+            <button
+              onClick={() => {
+                setMobileOpen(false);
+                onLogout && onLogout();
+              }}
+              className="flex items-center gap-3 w-full text-left 
                text-red-600 dark:text-red-400 
                text-shadow-lg px-4 py-2 rounded-lg 
                hover:bg-red-100 dark:hover:bg-gray-700 
                transition-all duration-300"
-  >
-    <LogOut size={20} />
-    {!collapsed && <span>Logout</span>}
-  </button>
-</div>
+            >
+              <LogOut size={20} />
+              {!collapsed && <span>Logout</span>}
+            </button>
+          </div>
 
 
           {/* Footer */}

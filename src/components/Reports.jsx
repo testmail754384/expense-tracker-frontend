@@ -57,7 +57,8 @@ export default function Reports({ refreshKey }) {
     const fetchTransactions = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/transactions`);
+            const res = await api.get(`/transactions`, {
+          headers: { Authorization: `Bearer ${token}` }});
             // Ensure date is only YYYY-MM-DD
             const formattedData = res.data.map(tx => ({
                 ...tx,

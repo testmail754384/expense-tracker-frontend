@@ -12,6 +12,7 @@ import {
   Trash2,
 } from "lucide-react";
 import api from "../config/axiosConfig"; // Axios instance
+import axios from 'axios'
 
 // --- Main Settings Component ---
 export default function Settings({ onUpdate }) {
@@ -32,17 +33,24 @@ export default function Settings({ onUpdate }) {
   const [isDeletingData, setIsDeletingData] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
+
   // --- Initial Data Fetch ---
   useEffect(() => {
+
+    if (!localStorage.getItem("authToken")) {
+      navigate("/login");
+    }
+
     const fetchUserData = async () => {
       setLoading(true);
       try {
-        const res = await api.get("/user/me");
+        const res = await api.get("/user/me"); // interceptor sends token
         setUserData(res.data || { name: "", email: "", profilePic: "" });
         setNameInput(res.data.name || "");
       } catch (err) {
-        console.error("Failed to fetch user data:", err);
+        console.error(err);
         toast.error("Session expired or failed to load user data.");
+        localStorage.removeItem("authToken");
         navigate("/login");
       } finally {
         setLoading(false);
@@ -50,6 +58,7 @@ export default function Settings({ onUpdate }) {
     };
     fetchUserData();
   }, [navigate]);
+
 
 
   // --- Handlers ---
@@ -90,7 +99,6 @@ export default function Settings({ onUpdate }) {
       if (newProfilePicBase64) payload.profilePic = newProfilePicBase64;
 
       const res = await api.put("/user/update-profile", payload);
-
       setUserData(res.data.user);
       setNameInput(res.data.user.name);
       setNewProfilePicBase64(null);
@@ -118,7 +126,6 @@ export default function Settings({ onUpdate }) {
       toast.success("Password changed successfully!");
       setPasswordData({ oldPassword: "", newPassword: "" });
     } catch (err) {
-      console.error(err);
       toast.error(err.response?.data?.message || "Failed to change password.");
     } finally {
       setIsSavingPassword(false);

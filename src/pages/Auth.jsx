@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
-import api from "../config/axiosConfig"; // Axios instance
+import api from '../config/axiosConfig' // Axios instance
 
 export default function Auth() {
   const [tab, setTab] = useState("login");
@@ -153,7 +153,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4 bg-gradient-to-br from-green-300 via-emerald-200 to-lime-300 dark:from-green-900 dark:via-green-800 dark:to-green-950 transition-colors duration-500">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4 bg-gradient-to-br from-green-300 via-blue-400 to-lime-500  dark:from-green-700 dark:via-blue-400 dark:to-green-700 transition-colors duration-500">
       {/* Animated Glow Orbs */}
       <motion.div
         className="absolute w-[500px] h-[500px] rounded-full blur-3xl top-[-10%] left-[-10%] bg-green-400/30 dark:bg-green-700/40"
@@ -171,7 +171,7 @@ export default function Auth() {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-md p-4 z-10 rounded-2xl shadow-2xl backdrop-blur-xl bg-white/90 dark:bg-gray-800/90 border border-white/50 dark:border-gray-500/70"
+        className="w-full max-w-md p-4 z-10 rounded-2xl shadow-2xl backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 border border-white/50 dark:border-gray-500/70"
       >
         <motion.h1
           initial={{ opacity: 0 }}
@@ -179,8 +179,8 @@ export default function Auth() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-center text-sm md:text-xl font-bold mb-2 text-gray-800 dark:text-gray-100"
         >
-          Manage Your Expenses <br></br> With 
-          <p className="text-green-500 text-2xl">ExpensePro</p> 
+          Manage Your Expenses <br></br> With
+          <p className="text-green-500 text-2xl">ExpensePro</p>
         </motion.h1>
 
         {/* Currency Icon */}
@@ -215,11 +215,10 @@ export default function Auth() {
             <button
               key={type}
               onClick={() => setTab(type)}
-              className={`relative text-base font-semibold transition-colors duration-300 cursor-pointer px-3 py-1 ${
-                tab === type
-                  ? "text-green-700 dark:text-green-400"
-                  : "text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-300"
-              }`}
+              className={`relative text-base font-semibold transition-colors duration-300 cursor-pointer px-3 py-1 ${tab === type
+                ? "text-green-700 dark:text-green-400"
+                : "text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-300"
+                }`}
             >
               {type === "login" ? "Login" : "Sign Up"}
               {tab === type && (
@@ -312,10 +311,10 @@ export default function Auth() {
                   {isOtpLoading
                     ? "Sending..."
                     : countdown > 0
-                    ? `Resend (${countdown}s)`
-                    : otpSent
-                    ? "Resend"
-                    : "Send OTP"}
+                      ? `Resend (${countdown}s)`
+                      : otpSent
+                        ? "Resend"
+                        : "Send OTP"}
                 </button>
               </motion.div>
             )}
@@ -327,7 +326,7 @@ export default function Auth() {
             >
               {isFormLoading ? "Processing..." : tab === "login" ? "Login" : "Sign Up"}
             </motion.button>
-            
+
             {tab === "login" && (
               <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-3">
                 <a href="/forgot-password" className="text-blue-600 hover:underline">
@@ -391,10 +390,10 @@ const PasswordRequirement = ({ isValid, text }) => (
 // NEW: Component to calculate and display the password strength bar and text.
 const PasswordStrengthMeter = ({ validations }) => {
   const strengthScore = Object.values(validations).filter(Boolean).length;
-  
+
   let strengthText = "";
   let strengthColor = "";
-  
+
   switch (strengthScore) {
     case 1:
     case 2:
@@ -422,12 +421,11 @@ const PasswordStrengthMeter = ({ validations }) => {
     <div className="mt-2">
       <div className="flex justify-between items-center mb-1">
         <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Password Strength:</span>
-        <span className={`text-xs font-bold ${
-          strengthScore === 5 ? 'text-green-500' :
+        <span className={`text-xs font-bold ${strengthScore === 5 ? 'text-green-500' :
           strengthScore === 4 ? 'text-yellow-500' :
-          strengthScore === 3 ? 'text-orange-500' :
-          'text-red-500'
-        }`}>{strengthText}</span>
+            strengthScore === 3 ? 'text-orange-500' :
+              'text-red-500'
+          }`}>{strengthText}</span>
       </div>
       <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
         <motion.div

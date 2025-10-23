@@ -80,7 +80,8 @@ export default function ViewExpense({ refreshKey }) {
     const fetchTransactions = async () => {
         setLoading(true); // Start loading
         try {
-            const res = await api.get(`/transactions`);
+            const res = await api.get(`/transactions`, {
+          headers: { Authorization: `Bearer ${token}` }});
             const formattedData = res.data.map(tx => ({
                 ...tx,
                 date: tx.date.split("T")[0] // Keep date as YYYY-MM-DD for filtering

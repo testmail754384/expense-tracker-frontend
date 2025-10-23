@@ -35,9 +35,11 @@ export default function Overview({ refreshKey }) {
 
         if (res.data.length === 0) setTransactions([]);
         else {
-          const formatted = res.data.map((tx) => ({
+          // Safe handling
+          const data = Array.isArray(res.data) ? res.data : res.data.transactions || [];
+          const formatted = data.map(tx => ({
             ...tx,
-            date: tx.date.split("T")[0],
+            date: tx.date ? tx.date.split("T")[0] : ""
           }));
           setTransactions(formatted);
         }
@@ -87,18 +89,18 @@ export default function Overview({ refreshKey }) {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
         <div className="bg-white/80 dark:bg-gray-800/80 p-5 rounded-2xl shadow-md border border-green-100 dark:border-gray-700 transition-colors">
-  <div className="flex justify-between items-center">
-    <h4 className="text-green-700 dark:text-green-400 font-semibold text-lg">Total Income</h4>
-    <Wallet className="text-green-600 dark:text-green-400" />
-  </div>
-  <p className="text-3xl font-bold text-green-800 dark:text-green-300 mt-2">₹{totalIncome}</p>
-  <span className="text-sm text-gray-600 dark:text-gray-300 flex items-center mt-1">
-    <ArrowUpRight className="text-green-600 dark:text-green-400 mr-1" size={16} />
-    {totalIncome && totalExpense
-      ? `${((totalIncome / (totalIncome + totalExpense)) * 100).toFixed(0)}% increase`
-      : "0%"}
-  </span>
-</div>
+          <div className="flex justify-between items-center">
+            <h4 className="text-green-700 dark:text-green-400 font-semibold text-lg">Total Income</h4>
+            <Wallet className="text-green-600 dark:text-green-400" />
+          </div>
+          <p className="text-3xl font-bold text-green-800 dark:text-green-300 mt-2">₹{totalIncome}</p>
+          <span className="text-sm text-gray-600 dark:text-gray-300 flex items-center mt-1">
+            <ArrowUpRight className="text-green-600 dark:text-green-400 mr-1" size={16} />
+            {totalIncome && totalExpense
+              ? `${((totalIncome / (totalIncome + totalExpense)) * 100).toFixed(0)}% increase`
+              : "0%"}
+          </span>
+        </div>
 
 
         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-5 rounded-2xl shadow-md border border-green-100 dark:border-gray-700 transition-colors">
@@ -189,7 +191,7 @@ export default function Overview({ refreshKey }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentTransactions.map((tx,index) => (
+                  {recentTransactions.map((tx, index) => (
                     <tr
                       key={tx.id}
                       className="border-b border-green-50 dark:border-gray-700 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors"
