@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
-
+import api from "../config/axiosConfig.jsx"
 export default function Auth() {
   const [tab, setTab] = useState("login");
   const [isOtpLoading, setIsOtpLoading] = useState(false);
