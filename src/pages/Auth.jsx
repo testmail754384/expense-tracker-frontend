@@ -103,7 +103,7 @@ export default function Auth() {
     try {
       let response;
       if (tab === "login") {
-        response = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
+        response = await api.post(`/auth/login`, {
           email: formData.email,
           password: formData.password,
         });
