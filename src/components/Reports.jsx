@@ -777,7 +777,7 @@ export default function Reports({ refreshKey }) {
         </div>
 
         {/* Peak Year */}
-        <div className="bg-white dark:bg.gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-2">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-2">
           <h3 className="font-semibold text-center text-gray-700 dark:text-gray-300 text-sm">
             Peak Year
           </h3>
