@@ -4,6 +4,14 @@ import { toast } from "react-toastify";
 import Appearance from "./Appearance";
 import { User, Shield, Database, Edit3, Save, Trash2 } from "lucide-react";
 import api from "../config/axiosConfig";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import { useUser } from "../context/UserContext";
+
+
+
 
 // --- Main Settings Component ---
 export default function Settings({ onUpdate, activeTheme, setActiveTheme }) {
@@ -15,6 +23,9 @@ export default function Settings({ onUpdate, activeTheme, setActiveTheme }) {
   });
   const [loading, setLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
+  const [transactions, setTransactions] = useState([]);
+  const { setUser } = useUser();
+
 
   // Form states
   const [nameInput, setNameInput] = useState("");
@@ -30,6 +41,9 @@ export default function Settings({ onUpdate, activeTheme, setActiveTheme }) {
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingData, setIsDeletingData] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+
+
 
   // --- Initial Data Fetch ---
   useEffect(() => {
@@ -56,6 +70,20 @@ export default function Settings({ onUpdate, activeTheme, setActiveTheme }) {
 
     fetchUserData();
   }, [navigate]);
+
+
+    useEffect(() => {
+  const fetchTransactions = async () => {
+    try {
+      const res = await api.get("/transactions");
+      setTransactions(res.data);
+    } catch (err) {
+      console.error("Failed to load transactions", err);
+    }
+  };
+
+  fetchTransactions();
+}, []);
 
   // --- Handlers ---
   const handleFileChange = (e) => {
@@ -90,28 +118,41 @@ export default function Settings({ onUpdate, activeTheme, setActiveTheme }) {
   };
 
   const handleProfileUpdate = async (e) => {
-    e.preventDefault();
-    if (!nameInput.trim()) return toast.warn("Name cannot be empty.");
-    setIsSavingProfile(true);
+  e.preventDefault();
+  if (!nameInput.trim()) return toast.warn("Name cannot be empty.");
+  setIsSavingProfile(true);
 
-    try {
-      const payload = { name: nameInput.trim() };
-      if (newProfilePicBase64) payload.profilePic = newProfilePicBase64;
+  try {
+    const payload = { name: nameInput.trim() };
+    if (newProfilePicBase64) payload.profilePic = newProfilePicBase64;
 
-      const res = await api.put("/user/update-profile", payload);
-      setUserData(res.data.user);
-      setNameInput(res.data.user.name);
-      setNewProfilePicBase64(null);
-      setProfilePicPreview(null);
-      if (typeof onUpdate === "function") onUpdate();
-      toast.success("Profile updated!");
-    } catch (err) {
-      console.error("Profile Update Error:", err);
-      toast.error(err.response?.data?.message || "Failed to update profile.");
-    } finally {
-      setIsSavingProfile(false);
-    }
-  };
+    const res = await api.put("/user/update-profile", payload);
+
+    // ✅ Update local state (optional UI)
+    setUserData(res.data.user);
+    setNameInput(res.data.user.name);
+
+    // ✅ CRITICAL: Update GLOBAL user context
+    setUser((prev) => ({
+      ...prev,
+      name: res.data.user.name,
+      profilePic: res.data.user.profilePic
+    }));
+
+    setNewProfilePicBase64(null);
+    setProfilePicPreview(null);
+
+    if (typeof onUpdate === "function") onUpdate();
+
+    toast.success("Profile updated!");
+  } catch (err) {
+    console.error("Profile Update Error:", err);
+    toast.error(err.response?.data?.message || "Failed to update profile.");
+  } finally {
+    setIsSavingProfile(false);
+  }
+};
+
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
@@ -155,6 +196,71 @@ export default function Settings({ onUpdate, activeTheme, setActiveTheme }) {
     }
   };
 
+
+
+
+const exportExcel = () => {
+  // 🔹 Remove receipt field (base64) before export
+  const cleanData = transactions.map(tx => ({
+    Date: new Date(tx.date).toLocaleDateString(),
+    Type: tx.type,
+    Category: tx.category,
+    Amount: tx.amount,
+    Description: tx.description || ""
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(cleanData);
+  const workbook = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  saveAs(blob, "Expense_Report.xlsx");
+};
+
+
+
+const exportPDF = () => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(16);
+  doc.text("ExpensePro - Transaction Report", 14, 15);
+
+  const tableData = transactions.map(tx => [
+    new Date(tx.date).toLocaleDateString(),
+    tx.type,
+    tx.category,
+    tx.amount,
+    tx.description || "-"
+  ]);
+
+  autoTable(doc, {
+    head: [["Date", "Type", "Category", "Amount", "Description"]],
+    body: tableData,
+    startY: 25,
+    styles: { fontSize: 10 },
+    headStyles: { fillColor: [22, 163, 74] }
+  });
+
+  doc.save("Expense_Report.pdf");
+};
+
+
+
+
+
+
+
+
   const handleDeleteAllTransactions = async () => {
     setIsDeletingData(true);
 
@@ -187,6 +293,9 @@ export default function Settings({ onUpdate, activeTheme, setActiveTheme }) {
     `https://ui-avatars.com/api/?name=${encodeURIComponent(
       avatarName
     )}&background=random&color=fff&bold=true`;
+
+
+
 
   return (
     <div className="h-full overflow-y-auto scroll-smooth mt-11 p-3 md:p-4 pb-10 bg-transparent dark:text-gray-200">
@@ -334,6 +443,22 @@ export default function Settings({ onUpdate, activeTheme, setActiveTheme }) {
             >
               {isExporting ? "Exporting your data..." : "Export All Data as CSV"}
             </button>
+
+            <button
+                onClick={exportExcel}
+                className=" w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg  hover:bg-green-700 dark:hover:bg-green-800 transition disabled:bg-green-400 disabled:cursor-not-allowed text-sm"
+              >
+                {isExporting ? "Exporting your data..." : "Export as Excel"}
+            </button>
+
+              <button
+                onClick={exportPDF}
+                className=" w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg  hover:bg-blue-700 dark:hover:bg-blue-800 transition disabled:bg-blue-400 disabled:cursor-not-allowed text-sm"
+              >
+                {isExporting ? "Exporting your data..." : "Export as PDF"}
+            </button>
+      
+
             <div className="p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-r-lg">
               <p className="text-sm font-semibold text-red-800 dark:text-red-300">
                 Danger Zone

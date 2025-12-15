@@ -628,121 +628,101 @@ export default function ViewExpense({ refreshKey }) {
           </div>
         </div>
 
-        {/* Transactions */}
-        {loading ? (
-          <p className="text-center text-gray-600 dark:text-gray-400 py-10 text-sm">
-            Loading transactions...
-          </p>
-        ) : filteredTransactions.length === 0 ? (
-          <p className="text-center text-gray-600 dark:text-gray-400 py-10 text-sm">
-            {transactions.length === 0
-              ? "No transactions found. Add one above!"
-              : "No transactions match your filters."}
-          </p>
-        ) : (
-          <div
-            className={
-              currentView === "grid"
-                ? "grid grid-cols-1 md:grid-cols-2 gap-4"
-                : "flex flex-col gap-3"
-            }
+       {/* Transactions */}
+{loading ? (
+  <p className="text-center text-gray-600 dark:text-gray-400 py-10 text-sm">
+    Loading transactions...
+  </p>
+) : filteredTransactions.length === 0 ? (
+  <p className="text-center text-gray-600 dark:text-gray-400 py-10 text-sm">
+    {transactions.length === 0
+      ? "No transactions found. Add one above!"
+      : "No transactions match your filters."}
+  </p>
+) : (
+  <div
+    className={
+      currentView === "grid"
+        ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"
+        : "flex flex-col gap-3"
+    }
+  >
+    {filteredTransactions.map((tx) => (
+      <div
+        key={tx._id}
+        className={`p-3 rounded-2xl shadow-sm border text-xs sm:text-sm
+        ${
+          tx.type === "income"
+            ? "bg-green-50 border-green-200 dark:bg-green-900/40 dark:border-green-700"
+            : "bg-red-50 border-red-200 dark:bg-red-900/40 dark:border-red-700"
+        }
+        ${currentView === "list" ? "w-full" : ""}
+      `}
+      >
+        {/* Top row: Category + Amount */}
+        <div className="flex justify-between items-start mb-1">
+          <h2 className="font-semibold text-gray-800 dark:text-gray-100">
+            {tx.category}
+          </h2>
+          <span
+            className={`font-semibold ${
+              tx.type === "income"
+                ? "text-green-700 dark:text-green-300"
+                : "text-red-700 dark:text-red-300"
+            }`}
           >
-            {filteredTransactions.map((tx) => (
-              <div
-                key={tx._id}
-                className={`p-4 rounded-2xl shadow-sm border text-sm ${
-                  tx.type === "income"
-                    ? "bg-green-50 border-green-200 dark:bg-green-900/40 dark:border-green-700"
-                    : "bg-red-50 border-red-200 dark:bg-red-900/40 dark:border-red-700"
-                } ${
-                  currentView === "list"
-                    ? "flex flex-col sm:flex-row sm:items-center sm:justify-between"
-                    : ""
-                }`}
-              >
-                <div
-                  className={`mb-2 ${
-                    currentView === "list" ? "sm:mb-0 sm:flex-grow" : ""
-                  }`}
-                >
-                  <div
-                    className={`flex justify-between items-start ${
-                      currentView === "list" ? "sm:items-center" : "mb-1"
-                    }`}
-                  >
-                    <h2
-                      className={`font-semibold text-gray-800 dark:text-gray-100 ${
-                        currentView === "list" ? "sm:text-sm" : "text-base"
-                      }`}
-                    >
-                      {tx.category}
-                    </h2>
-                    <span
-                      className={`font-semibold ${
-                        tx.type === "income"
-                          ? "text-green-700 dark:text-green-300"
-                          : "text-red-700 dark:text-red-300"
-                      } ${currentView === "list" ? "text-sm sm:ml-4" : "text-base"}`}
-                    >
-                      {tx.type === "income" ? "+" : "-"}₹
-                      {tx.amount.toFixed(2)}
-                    </span>
-                  </div>
-                  <p className="text-gray-500 text-xs dark:text-gray-300/70">
-                    {new Date(tx.date + "T00:00:00").toLocaleDateString()}
-                  </p>
-                </div>
+            {tx.type === "income" ? "+" : "-"}₹{tx.amount.toFixed(2)}
+          </span>
+        </div>
 
-                {tx.description && (
-                  <p
-                    className={`text-gray-700 text-xs md:text-sm dark:text-gray-200 ${
-                      currentView === "list"
-                        ? "mb-2 sm:mb-0 sm:flex-grow sm:mx-4"
-                        : "mt-2 mb-3"
-                    }`}
-                  >
-                    {tx.description}
-                  </p>
-                )}
+        {/* Date */}
+        <p className="text-gray-500 text-[11px] dark:text-gray-300/70">
+          {new Date(tx.date + "T00:00:00").toLocaleDateString()}
+        </p>
 
-                <div
-                  className={`flex items-center gap-2 ${
-                    currentView === "list" ? "sm:flex-shrink-0" : "justify-between"
-                  }`}
-                >
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        setEditData(tx);
-                        setReceiptPreview(tx.receipt || null);
-                      }}
-                      className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => confirmDelete(tx._id)}
-                      className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  {tx.receipt && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setViewReceiptModal({ open: true, src: tx.receipt })
-                      }
-                      className="flex items-center gap-1 text-blue-700 hover:text-blue-900 text-xs ml-auto dark:text-blue-300 dark:hover:text-blue-200"
-                    >
-                      <FileImage size={14} /> View Receipt
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Description */}
+        {tx.description && (
+          <p className="mt-1 mb-2 text-gray-700 dark:text-gray-200 text-[11px] sm:text-xs line-clamp-2">
+            {tx.description}
+          </p>
         )}
+
+        {/* Actions */}
+        <div className="mt-1 flex items-center gap-2 justify-between">
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setEditData(tx);
+                setReceiptPreview(tx.receipt || null);
+              }}
+              className="bg-blue-600 text-white px-2 py-1 rounded text-[11px] hover:bg-blue-700"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => confirmDelete(tx._id)}
+              className="bg-red-600 text-white px-2 py-1 rounded text-[11px] hover:bg-red-700"
+            >
+              Delete
+            </button>
+          </div>
+
+          {tx.receipt && (
+            <button
+              type="button"
+              onClick={() =>
+                setViewReceiptModal({ open: true, src: tx.receipt })
+              }
+              className="flex items-center gap-1 text-blue-700 hover:text-blue-900 text-[11px] ml-auto dark:text-blue-300 dark:hover:text-blue-200"
+            >
+              <FileImage size={12} /> View
+            </button>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
 
         {/* Delete Modal */}
         {deleteModal.open && (

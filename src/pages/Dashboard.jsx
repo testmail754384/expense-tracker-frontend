@@ -9,6 +9,10 @@ import TransactionModal from "../components/TransactionModal";
 import { PlusCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../config/axiosConfig";
+import AIChatModal from "../components/AIChatModel";
+
+
+
 
 // --- CATEGORY LISTS ---
 const expenseCategories = [
@@ -32,7 +36,7 @@ const incomeCategories = [
   "Other",
 ];
 // --- END ---
-
+const isLoggedIn = !!localStorage.getItem("authToken");
 const today = new Date().toISOString().split("T")[0];
 
 export default function Dashboard() {
@@ -102,6 +106,24 @@ export default function Dashboard() {
   }, [activeTheme]);
 
   // --- Auth Handling ---
+
+  // inside Dashboard component, near other handlers
+
+  const fetchUserProfile = async () => {
+    try {
+      const res = await api.get("/user/me"); // axiosConfig already sends token
+      const fullName = res.data?.name || res.data?.email || "User";
+      const firstName = fullName.split(" ")[0];
+      setUserName(firstName);
+    } catch (err) {
+      console.error("Failed to fetch user profile:", err);
+      // optional: if 401, force logout
+      // navigate("/login");
+    }
+  };
+
+
+
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const urlToken = searchParams.get("token");
@@ -118,15 +140,10 @@ export default function Dashboard() {
       return;
     }
 
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      setUserName(payload.name?.split(" ")[0] || "User");
-    } catch (error) {
-      console.error("Token decode error:", error);
-      localStorage.removeItem("authToken");
-      navigate("/login");
-    }
+    // ✅ Instead of decoding JWT, just load the user from backend
+    fetchUserProfile();
   }, [navigate]);
+
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -163,6 +180,8 @@ export default function Dashboard() {
       }
     };
   }, [receiptPreview]);
+
+
 
   const handleAddTransaction = async (e) => {
     e.preventDefault();
@@ -208,21 +227,27 @@ export default function Dashboard() {
     switch (activeTab) {
       case "overview":
         return <Overview refreshKey={refreshKey} />;
+
       case "viewExpenses":
         return <ViewExpenses refreshKey={refreshKey} />;
+
       case "reports":
         return <Reports refreshKey={refreshKey} />;
+
       case "settings":
         return (
           <Settings
+            onUpdate={fetchUserProfile}   // ✅ add this
             activeTheme={activeTheme}
             setActiveTheme={setActiveTheme}
           />
         );
+
       default:
         return <Overview refreshKey={refreshKey} />;
     }
   };
+
 
   return (
     <div
@@ -318,6 +343,13 @@ export default function Dashboard() {
         incomeCategories={incomeCategories}
         onSuccess={() => setRefreshKey((prev) => prev + 1)}
       />
+
+      <AIChatModal
+        isLoggedIn={true}
+        userName={userName}
+      />
+
+
     </div>
   );
 }

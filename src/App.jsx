@@ -7,6 +7,7 @@ import './index.css'
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword ";
 import ResetPassword from "./pages/ResetPassword";
+import { UserProvider } from "./context/UserContext";
 
 
 
@@ -32,8 +33,22 @@ const [activeTheme, setActiveTheme] = useState(
 
   return (
     <>
-  
-        <ToastContainer/>
+    <UserProvider>
+        <ToastContainer
+        position="top-center"
+        autoClose={2800}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        toastClassName="expense-toast"
+        bodyClassName="expense-toast-body"
+        progressClassName="expense-toast-progress"
+      />
       <BrowserRouter>
       <Routes>
         
@@ -44,6 +59,7 @@ const [activeTheme, setActiveTheme] = useState(
         <Route path="/reset-password" element={<ResetPassword />} />  
       </Routes>
     </BrowserRouter>
+    </UserProvider>
     </>
     
   );
