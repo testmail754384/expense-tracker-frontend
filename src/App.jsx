@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword ";
 import ResetPassword from "./pages/ResetPassword";
 import { UserProvider } from "./context/UserContext";
+import GoogleSuccess from "./pages/GoogleSuccess";
 
 
 
@@ -51,7 +52,7 @@ const [activeTheme, setActiveTheme] = useState(
       />
       <BrowserRouter>
       <Routes>
-        
+        <Route path="/google-success" element={<GoogleSuccess />} />
         <Route path="*" element={<Auth />} />
         <Route path="/login" element={<Auth />} />
         <Route path="/dashboard" element={<Dashboard/>} />

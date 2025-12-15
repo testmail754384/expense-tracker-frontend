@@ -364,7 +364,7 @@
   }
 
   .expense-toast {
-    width: 100% !important;
+    width: 60% !important;
     margin: 8px 0 !important;
     border-radius: 12px !important;
   }
